@@ -1,3 +1,9 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+
 # Introducción {#introduccion}
 
 ```{r, include = FALSE}
@@ -229,6 +235,8 @@ ggplot(datos_muestra,
     span=2, method='loess')
 ```
 
+% La línea gris es mejor que la roja, ajusta mejor y es más coherente. No es muy probable que por 1400 vuelva a subir y luego en 1500 baje otra vez la curva.
+
 
 #### Aprendizaje no supervisado {-}
 
@@ -240,6 +248,7 @@ Los problemas supervisados tienen un objetivo claro: hacer las mejores
 predicciones posibles bajo ciertas restricciones. Los problemas no supervisados
 tienden a tener objetivos más vagos, y por lo mismo pueden ser más difíciles.
 
+<!-- Se busca entender que tipos de coches hay, se quiere entender los datos y no predecir.-->
 
 #### Ejemplo: tipos de coches en el mercado {-}
 
@@ -458,6 +467,11 @@ el modelo aditivo $Y=f(X)+\epsilon$, el mejor predictor
 de $Y$ es $f(x)= E[Y|X=x]$. Es decir: lo que nos interesa es aproximar
 lo mejor que se pueda la esperanza condicional
 
+% $f(x)= E[Y|X=x]$ es de hecho la linea azul.
+% Dependiendo del problema en lugar de perdida cuadratica, se sugiere utilizar el valor absoluto para que las diferencias no se hagan mas pequeñas si nos inferiores a 1 o sean más grandes si son mayores a 1.
+%Se hace generan dos muestras: una para entrenar el modelo y el otro para calcular el error (hacer el test y ver como se comporta)
+
+
 ## Tarea de aprendizaje supervisado {#aprendizaje}
 
 Ahora tenemos los elementos para definir con precisión el problema
@@ -506,6 +520,8 @@ También consideramos el **error de entrenamiento**, dado por
 $$\overline{err} = \frac{1}{N}\sum_{i=1}^N (y^{(i)} - \hat{f}(x^{(i)}))^2$$
 - Pregunta: ¿Por qué $\overline{err}$ no necesariamente es una buena estimación
   de $Err$?
+  
+    Por que  $\overline{err}$ es el error de entrenamiento y tiende a ser menor q el error de  $Err$ 
 
 #### Ejemplo
 
@@ -530,17 +546,25 @@ curva.3 <- geom_smooth(data=datos_entrena,
 ggplot(datos_entrena, aes(x=x, y=y)) + geom_point() + curva.1 + curva.2 + curva.3
 ```
 
+%La roja es muy particular para la muestra de entrenamiento (aprendió demasiado de los datos y se ve q es un mal modelo)
+%La gris es como más generalizada e intuitivamente es la mejor, aprende de los datos. Es el que predice en error de prueba mejor
+%En la azul el error de prueba será alto xq no aprende lo suficiente
+
 
 Calculamos los errores de entrenamiento de cada curva:
 
 ```{r, warning = FALSE}
 mod_rojo <- loess(y ~ x, data = datos_entrena, span=0.3)
+#Regresión local pero en una ventana muy pequeña span=0.3
 mod_gris <- loess(y ~ x, data = datos_entrena, span=1)
+#Regresión local pero en una ventana más gde, span=1
 mod_recta <- lm(y ~ x, data = datos_entrena)
 df_mods <- data_frame(nombre = c('recta', 'rojo','gris'))
 df_mods$modelo <- list(mod_recta, mod_rojo, mod_gris)
 ```
 
+
+###Error de entrenamiento:
 ```{r}
 error_f <- function(df){
   function(mod){
@@ -568,6 +592,9 @@ y_0 <- f(x_0) + error
 datos_prueba <- data_frame(x = x_0, y = y_0)
 datos_prueba
 ```
+
+
+Te debes enfocar en el error prueba y no tanto en el error entrena
 
 ```{r}
 error_p <- error_f(datos_prueba)
