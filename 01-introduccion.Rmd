@@ -705,7 +705,7 @@ modelo. A este conjunto le llamaremos **conjunto o muestra de entrenamiento**
 
 
 
-## ¿Cómo estimar $f$? 
+## ¿Cómo estimar f? 
 
 
 Los métodos para construir la estimación $\hat{f}$ se dividen en dos
