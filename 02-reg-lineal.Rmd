@@ -128,6 +128,9 @@ $f_{\beta} (X_1) = \beta_0 + \beta_1 X_1$,
 que es una recta. Los cálculos serían como sigue:
 
 ```{r}
+#función cerradura
+#primero debes llamar la fn con el param de más afuera y después el de adentro
+#ejemplo fn potencia
 rss_calc <- function(datos){
   y <- datos$lpsa
   x <- datos$lcavol
@@ -172,6 +175,11 @@ ggplot(prostata_entrena, aes(x = lcavol, y = lpsa)) + geom_point() +
 Ahora minimizamos. Podríamos hacer
 
 ```{r,  fig.width=4,fig.asp=0.7}
+#minimiza la funeción rss y el algoritmo inicia en (0,0) (semilla)
+#con el método BFGS, puede ser el que quieras
+#Ojo: esto solo puede ser como fue construida la fn rss (que sólo le
+#tengas que dar como input las betas)
+
 res_opt <- optim(c(0,0), rss, method = 'BFGS')
 beta_hat <- res_opt$par
 beta_hat
@@ -204,11 +212,11 @@ proceso hasta que la derivada es cercana a cero (estamos cerca del óptimo).
 
 Si $\eta>0$ es una cantidad chica, podemos escribir
 
-$$z^{(1)} = z^{(0)} + \eta \,h'(z^{(0)}).$$
+$$z^{(1)} = z^{(0)} - \eta \,h'(z^{(0)}).$$
 
 Nótese que cuando la derivada tiene magnitud alta, el movimiento de $z^{(0)}$ a $z^{(1)}$
 es más grande, y siempre nos movemos una fracción de la derivada. En general hacemos
-$$z^{(j+1)} = z^{(j)} + \eta\,h'(z^{(j)})$$
+$$z^{(j+1)} = z^{(j)} - \eta\,h'(z^{(j)})$$
 para obtener una sucesión $z^{(0)},z^{(1)},\ldots$. Esperamos a que $z^{(j)}$ converja
 para terminar la iteración.
 
@@ -359,6 +367,7 @@ $$ \frac{1}{2}\frac{\partial}{\partial \beta_j} (y^{(i)} - f_\beta(x^{(i)}))^2 =
 
 Ahora recordamos que
 $$f_{\beta} (x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p$$
+**Nota:** la derivada es con respecto a $\beta$
 
 Y vemos que tenemos dos casos. Si $j=0$,
 
@@ -502,7 +511,7 @@ para cada variable de entrada $j=1,2,\ldots, p$
 $$ x_j^{(i)} = \frac{ x_j^{(i)} - \bar{x}_j}{s_j}$$
 donde
 $$\bar{x}_j = \frac{1}{N} \sum_{i=1}^N x_j^{(i)}$$
-$$s_j = \frac{1}{N-1}\sum_{i=1}^N (x_j^{(i)}- \bar{x}_j )^2$$
+$$s_j^2 = \frac{1}{N-1}\sum_{i=1}^N (x_j^{(i)}- \bar{x}_j )^2$$
 es decir, centramos y normalizamos por columna. Otra opción común es restar
 el mínimo y dividir entre la diferencia del máximo y el mínimo, de modo
 que las variables resultantes toman valores en $[0,1]$.
@@ -562,6 +571,7 @@ pr_entrena <- pr_entrena %>% mutate(id = 1:nrow(pr_entrena))
 pr_entrena_s <- 
   pr_entrena %>% 
   select(id, lcavol, age, lpsa) %>%
+  #para pasar las variables  a renglones (columnas a renglones dependiendo de la variable)
   gather(variable, valor, lcavol:age) %>%
   group_by(variable) %>%
   mutate(media = mean(valor), desv = sd(valor)) %>%
@@ -587,6 +597,10 @@ Ahora podemos interpretar el predictor:
 sube alrededor de 0.9 unidades (de un rango de alrededor de 6 unidades)
 - Si age sube 1 desviación estándar por encima de su media, el predictor de lpsa
 sube 0.02, lo cual es un movimiento muy chico considerando la variación de lpsa.
+- * Conviene hacer todo el análisis con los datos estandarizados xq asi es transparente 
+el moviento si es un desviación (y no tengo que hacer la conversión como decir si sube 1.2 unis el lcavol 
+en lugar de decir una desviación)
+- * Podemos decir que lpsa no contribuye tanto y lcavol si xq es el triple de la media (ver lo  q sale en el summary)
 
 
 
@@ -794,6 +808,10 @@ Da las razones de el mejor o peor desempeño: recuerda que el desempeño en pred
 Por los ejemplos anteriores, vemos que k-vecinos más cercanos puede considerarse como un aproximador universal, que puede adaptarse a cualquier patrón importante que haya en los datos. Entonces, ¿cuál es la razón de utilizar otros métodos como regresión? ¿Por qué el desempeño de regresión sería superior?
 
 
+- Si tomo pocos vecinos más cercanos hay mucha variablidad
+- Si tomo muchos ya existe la parte del sesgo, pues ya están muy distantes las observaciones y ya no tienen q ver entre ellos
+
+
 #### La maldición de la dimensionalidad {-}
 El método de k-vecinos más cercanos funciona mejor cuando hay muchas $x$ cercanas a $x0$, de forma que el promedio sea estable (muchas $x$), y extrapolemos poco ($x$ cercanas).
 Cuando $k$ es muy chica, nuestras estimaciones son ruidosas, y cuando $k$ es grande y los vecinos están lejos, entonces estamos sesgando la estimación local con datos lejanos a nuestra región de interés.
@@ -859,8 +877,11 @@ Cuando la dimensión crece, la situación empeora exponencialmente.
 
 ```{block, type = 'comentario'}
 En dimensiones altas, todos los conjuntos de entrenamiento factibles
-se distribuyen de manera rala en el espacio de entradas.
+se distribuyen de manera rara en el espacio de entradas.
 ```
+
+- Entre más diemsiones tienes, los datos suelen irsea la frontera y el centro está prácticamente vacío
+
 
 Ahora intentamos algo similar con una función que es razonable aproximar
 con una función lineal:
