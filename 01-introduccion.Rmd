@@ -19,10 +19,10 @@ Métodos **computacionales** para **aprender de datos**  con el fin
 de producir reglas para 
 mejorar el **desempeño** en alguna tarea o toma de decisión. 
 
-En este curso nos enfocamos en las tareas de aprendizaje supervisado 
-(predecir o estimar una variable respuesta a partir de datos de entrada) y
-aprendizaje no supervisado (describir estructuras interesantes en datos,
-donde no necesariamente hay una respuesta que predecir).
+En este curso nos enfocamos en las tareas de aprendizaje **supervisado 
+(_predecir_ o estimar una variable respuesta a partir de datos de entrada)** y
+aprendizaje **no supervisado (_describir_ estructuras interesantes en datos,
+donde no necesariamente hay una respuesta que predecir)**.
 
 #### Ejemplos de tareas de aprendizaje: {-}
 
@@ -149,7 +149,8 @@ ggplot(dat_ingreso, aes(x = tamaño_localidad, y = INGTOT)) +
 respuesta es generalmente una mala estimación del verdadero ingreso, por lo que
 actualmente se prefiere utilizar aprendizaje para estimar a partir de otras
 variables que son más fielmente reportadas por encuestados (años de estudio,
-ocupación, número de focos en el hogar, etc.)
+ocupación, número de focos en el hogar, etc.)\
+_es mala estimación porque la gente miente mucho_
 
 
 
@@ -160,7 +161,7 @@ supervisado y aprendizaje no supervisado.
 
 
 - **Aprendizaje supervisado** Construir un modelo o algoritmo para
-predecir o estimar un *target* o una *variable de salida* a partir
+**predecir** o estimar un *target* o una *variable de salida* a partir
 de ciertas variables de entrada.
 
 Predecir y estimar, en este contexto, se refieren a cosas similares. Generalmente
@@ -176,12 +177,12 @@ de tarjeta de crédito, utilizamos datos históricos de clientes que han pagado
 y no han pagado. Con estos datos entrenamos un algoritmo para detectar anticipadamente los
 clientes con alto riesgo de impago.
 
-Usualmente dividimos los problemas de aprendizaje supervisado en dos tipos,
+Usualmente dividimos los problemas de **aprendizaje supervisado** en **dos tipos**,
 dependiendo de la variables salida:
 
-- Problemas de **regresión**: cuando la salida es una variable numérica. El ejemplo
+- Problemas de **regresión**: cuando *la salida es una variable numérica*. El ejemplo
 de estimación de ingreso es un problema de regresión
-- Problemas de **clasificación**: cuando la salida es una variable categórica. El
+- Problemas de **clasificación**: cuando *la salida es una variable categórica*. El
 ejemplo de detección de dígitos escritos a manos es un problema de clasificación.
 
 
@@ -235,22 +236,22 @@ ggplot(datos_muestra,
     span=2, method='loess')
 ```
 
-% La línea gris es mejor que la roja, ajusta mejor y es más coherente. No es muy probable que por 1400 vuelva a subir y luego en 1500 baje otra vez la curva.
-
+% La línea gris es mejor que la roja, ajusta mejor y es más coherente. No es muy probable que por 1400 vuelva a subir y luego en 1500 baje otra vez la curva como pasa con la curva roja (sobre ajusta).
 
 #### Aprendizaje no supervisado {-}
 
--  **Aprendizaje no supervisado** En este caso no hay *target*
-o variable salida. Buscamos modelar y entender las relaciones entre variables
+-  **Aprendizaje no supervisado** En este caso **no hay target**
+o variable salida. **Buscamos modelar y entender las relaciones** entre variables
 y entre observaciones, o patrones importantes o interesantes en los datos.
 
 Los problemas supervisados tienen un objetivo claro: hacer las mejores
 predicciones posibles bajo ciertas restricciones. Los problemas no supervisados
 tienden a tener objetivos más vagos, y por lo mismo pueden ser más difíciles.
 
-<!-- Se busca entender que tipos de coches hay, se quiere entender los datos y no predecir.-->
+
 
 #### Ejemplo: tipos de coches en el mercado {-}
+//Se busca entender que tipos de coches hay, se quiere entender los datos y no predecir//
 
 Quisieramos encontrar categorías de coches tales que: las categorías son diferentes
 entre sí, y los coches en una misma categoría son similares entre sí.
@@ -467,9 +468,10 @@ el modelo aditivo $Y=f(X)+\epsilon$, el mejor predictor
 de $Y$ es $f(x)= E[Y|X=x]$. Es decir: lo que nos interesa es aproximar
 lo mejor que se pueda la esperanza condicional
 
-% $f(x)= E[Y|X=x]$ es de hecho la linea azul.
-% Dependiendo del problema en lugar de perdida cuadratica, se sugiere utilizar el valor absoluto para que las diferencias no se hagan mas pequeñas si nos inferiores a 1 o sean más grandes si son mayores a 1.
-%Se hace generan dos muestras: una para entrenar el modelo y el otro para calcular el error (hacer el test y ver como se comporta)
+// $f(x)= E[Y|X=x]$ es de hecho la linea azul.\
+ Dependiendo del problema en lugar de perdida cuadratica, se sugiere 
+ utilizar el valor absoluto para que las diferencias no se hagan mas 
+ pequeñas si nos inferiores a 1 o sean más grandes si son mayores a 1.//
 
 
 ## Tarea de aprendizaje supervisado {#aprendizaje}
@@ -519,11 +521,17 @@ También consideramos el **error de entrenamiento**, dado por
 
 $$\overline{err} = \frac{1}{N}\sum_{i=1}^N (y^{(i)} - \hat{f}(x^{(i)}))^2$$
 - Pregunta: ¿Por qué $\overline{err}$ no necesariamente es una buena estimación
-  de $Err$?
-  
-    Por que  $\overline{err}$ es el error de entrenamiento y tiende a ser menor q el error de  $Err$ 
+  de $Err$?\
+  Por que  $\overline{err}$ es el error de entrenamiento y tiende a ser menor q el error de  $Err$ 
 
-#### Ejemplo
+
+ 
+Se generan dos muestras: una para entrenar el modelo y el otro para 
+ calcular el error (una para hacer el test y otra para ver como se 
+ comporta el modelo)
+ 
+ 
+### Ejemplo
 
 En el ejemplo que hemos estado usando, ¿que curva preferirías para
 predecir, la gris, la roja o la azul? ¿Cuál tiene menor error de entrenamiento?
@@ -546,9 +554,9 @@ curva.3 <- geom_smooth(data=datos_entrena,
 ggplot(datos_entrena, aes(x=x, y=y)) + geom_point() + curva.1 + curva.2 + curva.3
 ```
 
-%La roja es muy particular para la muestra de entrenamiento (aprendió demasiado de los datos y se ve q es un mal modelo)
-%La gris es como más generalizada e intuitivamente es la mejor, aprende de los datos. Es el que predice en error de prueba mejor
-%En la azul el error de prueba será alto xq no aprende lo suficiente
+`La roja es muy particular para la muestra de entrenamiento (aprendió demasiado de los datos y se ve q es un mal modelo)
+La gris es como más generalizada e intuitivamente es la mejor, aprende de los datos. Es la que predice en error de prueba mejor
+En la azul el error de prueba será alto xq no aprende lo suficiente
 
 
 Calculamos los errores de entrenamiento de cada curva:
@@ -566,12 +574,18 @@ df_mods$modelo <- list(mod_recta, mod_rojo, mod_gris)
 
 ###Error de entrenamiento:
 ```{r}
+# Determinar error de las predicciones
+
 error_f <- function(df){
   function(mod){
+    #Genera predicciones con base en el modelo que indiques en mod y el data frame
     preds <- predict(mod, newdata = df)
+    #Calcula el error
     round(sqrt(mean((preds-df$y)^2)))
   }
 }
+
+
 error_ent <- error_f(datos_entrena)
 
 df_mods <- df_mods %>% 
@@ -586,6 +600,7 @@ Sin embargo, consideremos que tenemos una nueva muestra (de prueba).
 
 ```{r, fig.width=5, fig.asp=0.7}
 set.seed(218052272)
+#generar una m.a. con reemplazo de tamaño 100 con posibles valores de 0-13
 x_0 <- sample(0:13, 100, replace = T)
 error <- rnorm(length(x_0), 0, 500)
 y_0 <- f(x_0) + error
@@ -661,8 +676,8 @@ a variables que no conocemos.
 Las observaciones o datos que usaremos para construir nuestras estimaciones
 las denotamos como sigue.
 
-Cada {\em observación} (o caso, o ejemplo) 
-está dada por un el valor de una variable de entrada $X$
+Cada *observación* (o caso, o ejemplo) 
+está dada por un valor de una variable de entrada $X$
 y un valor de la variable de salida $Y$. 
 Cuando tenemos $N$ ejemplos de entrenamiento, los
 escribimos como los pares
@@ -682,9 +697,10 @@ y $$\underline{y} =(y^{(1)},y^{(2)}, \ldots, y^{(N)})^t.$$
 Adicionalmente, usamos la notación
 
 $${\mathcal L}=\{ (x^{(1)},y^{(1)}), (x^{(2)},y^{(2)}), \ldots, (x^{(N)},y^{(N)}) \}$$
+// N observaciones y p variables//
 
 para denotar al conjunto de datos con los que construimos nuestro
-modelo. A este conjunto le llamaremos {\em conjunto o muestra de entrenamiento}
+modelo. A este conjunto le llamaremos **conjunto o muestra de entrenamiento**
 (learning set)
 
 
@@ -720,7 +736,7 @@ se reduce a estimar tres valores numéricos, en lugar de intentar estimar una fu
 arbitraria. Su desventaja es que quizá ningún miembro
 familia de modelos establecida (por ejemplo, modelos lineales) puede aproximar
 razonablemente bien a la verdadera función $f$. Es decir,
-estos métodos tienen {\em sesgo} potencial grande. Por ejemplo:
+estos métodos tienen *sesgo* potencial grande. Por ejemplo:
 
 
 ```{r, fig.width=8, fig.asp=0.7}
